@@ -53,11 +53,4 @@ public class WebSecurityConfig {
 
         return new InMemoryUserDetailsManager(user,admin);
     }
-
-    @Bean
-    public AuthenticationSuccessHandler successUserHandler() {
-        return new SuccessUserHandler();
-    }
-
-
 }
