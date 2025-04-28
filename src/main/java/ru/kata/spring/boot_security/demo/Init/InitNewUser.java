@@ -30,8 +30,8 @@ public class InitNewUser implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         userRepository.deleteAll();
-        createUser("admin", "admin@mail.com", "admin", "ROLE_ADMIN"); // Без повторного кодирования!
-        createUser("user", "user@mail.com", "user","ROLE_USER");
+        createUser("admin", "admin@mail.com", "admin", "ROLE_ADMIN");
+        createUser("user", "user@mail.com", "user", "ROLE_USER");
 
     }
 
@@ -49,7 +49,6 @@ public class InitNewUser implements CommandLineRunner {
             userRoles.add(role);
             user.setRoles(userRoles);
 
-            // Добавляем роль пользователю
             user.setRoles(Collections.singleton(role));
             userRepository.save(user);
         }
