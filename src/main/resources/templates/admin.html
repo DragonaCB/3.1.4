@@ -1,85 +1,50 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Panel</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Admin panel</title>
 </head>
 <body>
+<h2>User manage</h2>
 
-<div class="navbar">
-    <strong><span sec:authentication="principal.username "></span></strong>&nbsp;
-    with roles: <span th:text="${#strings.listJoin(#authentication.principal.authorities, ', ')}"></span>
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">Logout</button>
-    </form>
-</div>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Password</th>
+        <th>Role</th>
 
-<div class="sidebar">
-    <a href="/admin">Admin</a>
-    <a href="/user">User</a>
-</div>
+    </tr>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.id}">-</td>
+        <td th:text="${user.username}">User Name</td>
+        <td th:text="${user.email}">user@example.com</td>
+        <td th:text="${user.password}">password</td>
+        <td th:text="${user.rolesAsString}">role</td>
 
-<div class="container">
-    <h2>Admin panel</h2>
-    <div class="tabs">
-        <button onclick="window.location.href='/admin'" class="btn-tab">Users table</button>
-        <button onclick="window.location.href='/admin/new'" class="btn-tab">New User</button>
-    </div>
+        <td class="action-links">
+            <a th:href="@{/admin/edit(id=${user.id})}">Edit</a>
+        </td>
+        <td class="action-links">
+            <form th:action="@{/admin/delete}" method="post" style="display: inline;">
+                <input type="hidden" name="id" th:value="${user.id}">
+                <button type="submit"
+                        onclick="return confirm('Delete this user?')"
+                        style="background: none; border: none; color: #0066cc; cursor: pointer; padding: 0; text-decoration: underline;">
+                    Delete
+                </button>
+            </form>
+        </td>
+    </tr>
+</table>
 
-    <h3>All users</h3>
-    <table class="table table-striped table-hover">
-
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Edit</th>
-            <th>Delete</th>
-        </tr>
-        <tr th:each="user : ${users}">
-            <td th:text="${user.id}">-</td>
-            <td th:text="${user.username}">User Name</td>
-            <td th:text="${user.email}">user@example.com</td>
-            <td th:text="${user.rolesAsString}">role</td>
-
-            <td class="action-cell">
-                <a th:href="@{/admin/edit(id=${user.id})}" class="btn btn-edit">Edit</a>
-            </td>
-
-            <td class="action-cell">
-                <form th:action="@{/admin/delete}" method="post">
-                    <input type="hidden" name="id" th:value="${user.id}">
-                    <button type="submit" class="btn btn-delete" onclick="return confirm('Delete this user?')">Delete</button>
-                </form>
-            </td>
-        </tr>
-    </table>
-</div>
-<!-- Форма для добавления нового пользователя -->
-<div class="new-user-form" style="display: none;">
-    <h3>Add New User</h3>
-    <form th:action="@{/admin/new}" method="post">
-        <label for="username">Name:</label>
-        <input type="text" id="username" name="username" required>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-
-        <label for="role">Role:</label>
-        <select id="role" name="role">
-            <option value="ROLE_ADMIN">ADMIN</option>
-            <option value="ROLE_USER">USER</option>
-        </select>
-
-        <button type="submit" class="btn-submit">Add User</button>
-    </form>
-</div>
-
+<br/>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
+<a th:href="@{/admin/new}" >
+    <button type="submit">New user</button>
 </body>
 </html>
+
