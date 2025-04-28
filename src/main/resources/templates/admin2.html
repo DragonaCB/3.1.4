@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin panel</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h2>User manage</h2>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Password</th>
+        <th>Role</th>
+
+    </tr>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.id}">-</td>
+        <td th:text="${user.username}">User Name</td>
+        <td th:text="${user.email}">user@example.com</td>
+        <td th:text="${user.password}">password</td>
+        <td th:text="${user.rolesAsString}">role</td>
+
+        <td class="action-links">
+            <a th:href="@{/admin/edit(id=${user.id})}">Edit</a>
+        </td>
+        <td class="action-links">
+            <form th:action="@{/admin/delete}" method="post" style="display: inline;">
+                <input type="hidden" name="id" th:value="${user.id}">
+                <button type="submit"
+                        onclick="return confirm('Delete this user?')"
+                        style="background: none; border: none; color: #0066cc; cursor: pointer; padding: 0; text-decoration: underline;">
+                    Delete
+                </button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+<br/>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
+<a th:href="@{/admin/new}" >
+    <button type="submit">Registration</button>
+</body>
+</html>
+
