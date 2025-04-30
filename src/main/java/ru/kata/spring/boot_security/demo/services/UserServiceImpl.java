@@ -10,53 +10,6 @@ import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 import java.util.List;
 
-//@Service
-//@Transactional
-//public class UserServiceImpl implements UserService {
-//    private final UserRepository userRepository;
-//
-//    @Lazy
-//    @Autowired
-//    public UserServiceImpl(UserService userService, UserRepository userRepository) {
-//        this.userService = userService;
-//        this.userRepository = userRepository;
-//    }
-//
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<User> getAllUsers() {
-//        return userService.getAllUsers();
-//    }
-//
-//    @Override
-//    public User getUserById(Long id) {
-//        return userService.getUserById(id);
-//    }
-//
-//    @Override
-//    public void createUser(User user) {
-//        userService.createUser(user);
-//    }
-//
-//    @Override
-//    public void updateUser(Long id, User user) {
-//        userService.updateUser(id, user);
-//    }
-//
-//    @Override
-//    public void deleteUser(Long id) {
-//        userService.deleteUser(id);
-//    }
-//
-//    @Override
-//    @Transactional(readOnly = true)
-//    public User getUserByUsername(String username) {
-//        return userRepository.findByUsername(username)
-//                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
-//    }
-//
-//}
-
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
