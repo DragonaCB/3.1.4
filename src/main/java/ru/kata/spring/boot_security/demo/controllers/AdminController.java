@@ -15,7 +15,7 @@ public class AdminController {
     private final RoleService roleService;
 
     @Autowired
-    public AdminController(UserService userService, RoleServiceImpl roleServiceImpl, RoleService roleService) {
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
 
@@ -23,7 +23,7 @@ public class AdminController {
 
     @GetMapping
     public String showAdminPanel(Model model) {
-        model.addAttribute("user", new User()); // Для формы "New User"
+        model.addAttribute("user", new User());
         model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("availableRoles", roleService.getAllRoles());
         return "admin";
@@ -37,7 +37,6 @@ public class AdminController {
 
     @PostMapping("/update")
     public String updateUser(@ModelAttribute("user") User user) {
-        System.out.println("Received roleIds: " + user.getRoleIds()); // Временное логирование для отладки
         userService.updateUser(user.getId(), user);
         return "redirect:/admin";
     }
