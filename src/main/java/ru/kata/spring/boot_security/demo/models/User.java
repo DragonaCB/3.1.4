@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -28,12 +29,14 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
+
+    @Transient
+    private List<Long> roleIds;
 
     public User() {
 
@@ -73,7 +76,6 @@ public class User implements UserDetails {
         return username;
     }
 
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -92,6 +94,13 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public List<Long> getRoleIds() {
+        return roleIds;
+    }
+    public void setRoleIds(List<Long> roleIds) {
+        this.roleIds = roleIds;
     }
 
     @Override
@@ -142,4 +151,5 @@ public class User implements UserDetails {
                 ", roles=" + roles +
                 '}';
     }
+
 }

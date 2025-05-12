@@ -21,14 +21,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping()
-    public String getAllUsers(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        User user = userService.getUserByUsername(userDetails.getUsername());
-        model.addAttribute("users", user);
-        model.addAttribute("roles", user.getRoles());
+    @GetMapping
+    public String showUserInfo(Model model, Authentication authentication) {
+        String email = authentication.getName();
+        User user = userService.findByEmail(email);
+
+        model.addAttribute("user", user);
         return "user";
     }
-
-
-
 }

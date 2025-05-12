@@ -29,13 +29,13 @@ public class InitNewUser implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         userRepository.deleteAll();
-        createUser("admin", "admin@mail.com", "admin", "ROLE_ADMIN");
-        createUser("user", "user@mail.com", "user", "ROLE_USER");
+        createUser("admin", "admin@mail.ru", "admin", "ROLE_ADMIN");
+        createUser("user", "user@mail.ru", "user", "ROLE_USER");
 
     }
 
     private void createUser(String username, String email, String password, String roleName) {
-        if (userRepository.findByUsername(username).isEmpty()) {
+        if (userRepository.findByEmail(email).isEmpty()) {
             User user = new User();
             user.setUsername(username);
             user.setEmail(email);
