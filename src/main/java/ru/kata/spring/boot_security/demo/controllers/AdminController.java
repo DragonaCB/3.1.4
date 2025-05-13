@@ -18,7 +18,6 @@ public class AdminController {
     public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
-
     }
 
     @GetMapping
