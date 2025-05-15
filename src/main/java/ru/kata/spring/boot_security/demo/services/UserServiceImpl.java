@@ -1,13 +1,17 @@
 package ru.kata.spring.boot_security.demo.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -19,13 +23,15 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
+    private final RoleRepository roleRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder, RoleService roleService) {
+                           PasswordEncoder passwordEncoder, RoleService roleService, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -40,25 +46,24 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
     }
-
+    @Transactional
     @Override
-    public void createUser(User user) {
-        if (user.getUsername() == null || user.getUsername().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be null or empty!");
+    public User createUser(User user) {
+        Set<Role> rolesFromDb = new HashSet<>(roleRepository.findAllById(
+                user.getRoles().stream().map(Role::getId).toList()
+        ));
+        if (user.getRoles() == null) {
+            user.setRoles(new HashSet<>());
         }
-        List<Long> roleIds = user.getRoleIds();
-        if (roleIds != null && !roleIds.isEmpty()) {
-            Set<Role> roles = roleIds.stream()
-                    .map(roleService::findById)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toSet());
-            user.setRoles(roles);
-        }
-        userRepository.save(user);
+        user.getRoles().addAll(rolesFromDb);
+        System.out.println("Загруженные роли перед сохранением: " + rolesFromDb);
+
+        user.setRoles(rolesFromDb);
+        return userRepository.save(user);
     }
 
     @Override
-    public void updateUser(Long id, User user) {
+    public User updateUser(Long id, User user) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Пользователь с ID " + id + " не найден"));
 
@@ -78,6 +83,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.save(existingUser);
+        return existingUser;
     }
 
     @Override

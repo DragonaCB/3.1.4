@@ -1,13 +1,18 @@
 package ru.kata.spring.boot_security.demo.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -29,14 +34,17 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+
+    @JsonIgnoreProperties({"users", "authority"})
+    private Set<Role> roles = new HashSet<>();
 
     @Transient
-    private List<Long> roleIds;
+    @JsonProperty("roleIds")
+    private List<Long> roleIds = new ArrayList<>();
 
     public User() {
 
@@ -98,9 +106,6 @@ public class User implements UserDetails {
 
     public List<Long> getRoleIds() {
         return roleIds;
-    }
-    public void setRoleIds(List<Long> roleIds) {
-        this.roleIds = roleIds;
     }
 
     @Override
