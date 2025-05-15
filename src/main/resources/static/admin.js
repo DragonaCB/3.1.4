@@ -113,7 +113,6 @@ function addNewUser() {
             console.log("Создан пользователь:", data);
             document.getElementById("newUserForm").reset();
             loadUsers();
-            window.location.href = '/admin';
         })
         .catch(error => console.error("Ошибка создания пользователя:", error));
 }

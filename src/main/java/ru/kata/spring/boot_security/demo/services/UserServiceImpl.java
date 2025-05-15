@@ -49,6 +49,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User createUser(User user) {
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         Set<Role> rolesFromDb = new HashSet<>(roleRepository.findAllById(
                 user.getRoles().stream().map(Role::getId).toList()
         ));
