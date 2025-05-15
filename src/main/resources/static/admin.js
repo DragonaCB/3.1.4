@@ -7,16 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function setActiveNavLink() {
     const currentPath = window.location.pathname;
-    const adminLink = document.getElementById("adminLink");
-    const userLink = document.getElementById("userLink");
-
-    if (currentPath === "/admin") {
-        adminLink.classList.add("active");
-        userLink.classList.remove("active");
-    } else if (currentPath === "/user") {
-        userLink.classList.add("active");
-        adminLink.classList.remove("active");
-    }
+    document.getElementById("adminLink").classList.toggle("active", currentPath === "/admin");
+    document.getElementById("userLink").classList.toggle("active", currentPath === "/user");
 }
 
 document.getElementById("usersTab").addEventListener("click", function () {
@@ -41,7 +33,6 @@ function loadAdminInfo() {
                 `${user.email} with roles: ${user.roles.map(role => role.name).join(", ")}`;
         })
         .catch(error => {
-            console.error("Ошибка загрузки информации об админе:", error);
             document.getElementById("adminInfo").textContent = "Ошибка загрузки данных пользователя";
         });
 
@@ -79,9 +70,6 @@ function loadUsers() {
         .catch(error => console.error("Ошибка загрузки пользователей:", error));
 }
 
-document.addEventListener("DOMContentLoaded", loadUsers);
-
-
 function loadRoles() {
     fetch('/api/admin/roles')
         .then(response => response.json())
@@ -100,7 +88,6 @@ function loadRoles() {
         .catch(error => console.error("Ошибка загрузки ролей:", error));
 }
 
-document.addEventListener("DOMContentLoaded", loadRoles);
 
 function addNewUser() {
     let user = {
